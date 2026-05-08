@@ -1,0 +1,85 @@
+{
+  "strategy_id": "task-card-prompt-final-v0.3",
+  "version": "0.3",
+  "inherits": [
+    "candidate-a",
+    "candidate-b"
+  ],
+  "section_order": [
+    "role",
+    "mission",
+    "background",
+    "initial_state",
+    "target_behavior",
+    "hard_constraints",
+    "acceptance_criteria",
+    "execution_plan_guardrails",
+    "test_method",
+    "deliverables"
+  ],
+  "mapping": {
+    "mission": [
+      "task_type",
+      "goal"
+    ],
+    "background": [
+      "background"
+    ],
+    "initial_state": [
+      "initial_state"
+    ],
+    "target_behavior": [
+      "expected_behavior"
+    ],
+    "hard_constraints": [
+      "constraints",
+      "context_policy"
+    ],
+    "acceptance_criteria": [
+      "acceptance_criteria"
+    ],
+    "execution_plan_guardrails": [
+      "difficulty"
+    ],
+    "test_method": [
+      "test_method"
+    ],
+    "deliverables": [
+      "relevant_files",
+      "suitable_experiments",
+      "metadata"
+    ]
+  },
+  "defaults": {
+    "missing_string": "未提供该字段，请按当前上下文补齐",
+    "missing_array": "[]",
+    "missing_pass_signal": "所有验收标准均满足且关键测试通过"
+  },
+  "constraint_format": {
+    "keywords": [
+      "MUST",
+      "SHOULD",
+      "MUST NOT"
+    ],
+    "merge_policy": "constraints + context_policy",
+    "ordering": "input_order"
+  },
+  "conflict_resolution_order": [
+    "security_and_data_integrity",
+    "existing_runtime_contract",
+    "acceptance_criteria",
+    "implementation_convenience"
+  ],
+  "determinism": {
+    "preserve_section_order": true,
+    "preserve_list_order": true,
+    "preserve_placeholder_text": true,
+    "list_style": "numbered"
+  },
+  "evaluation_axes": [
+    "stability",
+    "constraint_fidelity",
+    "readability",
+    "experiment_comparability"
+  ]
+}

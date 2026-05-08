@@ -1,0 +1,9 @@
+{
+  "task_code": "TC-06",
+  "summary": "已完成候选 A/B 独立评审并给出优选结论：B 综合更优；同时形成 A+B 合并的 Final Prompt 生成规范，统一固定骨架、字段映射、缺省策略、约束分层与冲突决策序。",
+  "artifacts": [
+    "outputs/proj-3-1a1fca/TC-06/candidate-review.md",
+    "outputs/proj-3-1a1fca/TC-06/final-prompt-spec.md",
+    "outputs/proj-3-1a1fca/TC-06/final-prompt-rules.json"
+  ]
+}
