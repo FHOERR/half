@@ -1,0 +1,77 @@
+{
+  "plan_name": "proj-3 v0.3 Task Card 标准化落地计划（效果优先）",
+  "tasks": [
+    {
+      "task_code": "TC-01",
+      "task_name": "Task Card v0.3 结构定义与边界约束",
+      "description": "定义标准化 Task Card 字段规范（task type、background、goal、initial state、expected behavior、acceptance criteria、relevant files、constraints、test method、difficulty、context policy、suitable experiments），并明确 v0.3 与现有 Project/Plan/Task 的兼容策略及不纳入范围。",
+      "assignee": "Claude Max",
+      "depends_on": [],
+      "expected_output": "一份可实现的 Task Card schema 草案（字段定义、必填/选填、示例、v0.3 边界说明）。"
+    },
+    {
+      "task_code": "TC-02",
+      "task_name": "候选方案A：Task Card 到 Agent Prompt 生成器",
+      "description": "基于 TC-01 将结构化字段映射为稳定的 Agent Prompt 模板，重点控制提示顺序、约束表达和缺省字段处理，产出可直接用于 workflow/handoff 的 prompt 生成策略（候选 A）。",
+      "assignee": "Codex Pro",
+      "depends_on": [
+        "TC-01"
+      ],
+      "expected_output": "Prompt 生成模板候选 A（映射规则、模板文本、缺省策略、示例输入输出）。"
+    },
+    {
+      "task_code": "TC-03",
+      "task_name": "候选方案B：Task Card 到 Agent Prompt 生成器",
+      "description": "独立实现另一套 Prompt 生成策略（候选 B），重点优化复杂任务中的指令稳定性与上下文约束表达，便于与候选 A 做对比选择。",
+      "assignee": "Claude Max",
+      "depends_on": [
+        "TC-01"
+      ],
+      "expected_output": "Prompt 生成模板候选 B（映射规则、模板文本、复杂任务示例）。"
+    },
+    {
+      "task_code": "TC-04",
+      "task_name": "导出能力实现（Markdown / JSON）",
+      "description": "实现 Task Card 的双格式导出：JSON 作为结构化交换格式，Markdown 作为人读与评审格式；统一字段顺序、空值处理与版本标记，保证 workflow/handoff/实验记录可复用。",
+      "assignee": "Codex Pro",
+      "depends_on": [
+        "TC-01"
+      ],
+      "expected_output": "可用的 Task Card 导出模块（JSON/Markdown）及示例导出结果。"
+    },
+    {
+      "task_code": "TC-05",
+      "task_name": "Workflow / Handoff / 实验记录输入对齐",
+      "description": "将 Task Card 接入 workflow、handoff、实验记录入口，统一使用 Task Card 作为输入单元，定义最小可用记录字段并保持与现有 Task 兼容。",
+      "assignee": "Codex Pro",
+      "depends_on": [
+        "TC-02",
+        "TC-03",
+        "TC-04"
+      ],
+      "expected_output": "统一输入接入方案与实现，支持 Task Card 驱动 workflow/handoff/实验记录。"
+    },
+    {
+      "task_code": "TC-06",
+      "task_name": "候选 Prompt 评审与优选合并",
+      "description": "对候选 A/B 进行独立评审（稳定性、约束保真、可读性、实验可比性），输出优选结论并给出合并后的最终 Prompt 生成规范。",
+      "assignee": "Claude Max",
+      "depends_on": [
+        "TC-02",
+        "TC-03"
+      ],
+      "expected_output": "评审报告与最终 Prompt 生成规范（含选择理由与取舍说明）。"
+    },
+    {
+      "task_code": "TC-07",
+      "task_name": "端到端验收与发布就绪检查",
+      "description": "基于最终方案完成端到端验收：结构化描述、Prompt 生成、Markdown/JSON 导出、workflow/handoff/实验记录链路连通性；补齐 v0.3 使用说明与验收样例。",
+      "assignee": "Codex Pro",
+      "depends_on": [
+        "TC-05",
+        "TC-06"
+      ],
+      "expected_output": "v0.3 验收结果与发布就绪材料（验收清单、样例任务卡、使用说明）。"
+    }
+  ]
+}
