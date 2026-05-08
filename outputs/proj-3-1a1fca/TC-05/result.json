@@ -1,0 +1,141 @@
+{
+  "task_code": "TC-05",
+  "summary": "实现 Task Card v0.3 与 Workflow/Handoff/Experiment 的统一输入对齐。定义了最小可用记录字段集（MinimalRecordFields），支持三类记录：WorkflowExecutionRecord、HandoffRecord、ExperimentRecord。通过 TaskCardRecordFactory 统一创建记录，TaskCardRecordSerializer 统一序列化，WorkflowIntegrationAPI 提供高级接口。保证所有记录包含统一的验证清单和变更检测（checksum），支持完整的任务生命周期记录和审计追踪。",
+  "artifacts": [
+    "outputs/proj-3-1a1fca/TC-05/task_card_integration.py",
+    "outputs/proj-3-1a1fca/TC-05/integration_specification.md",
+    "outputs/proj-3-1a1fca/TC-05/integration_examples.py"
+  ],
+  "key_features": [
+    "统一的最小字段集：确保所有记录类型的一致性和可追踪性",
+    "三类记录类型：Workflow Execution、Handoff、Experiment",
+    "变更检测：使用 SHA256 checksum 监测 Task Card 源数据变更",
+    "十二字段验证：所有记录都验证 Task Card 的完整性",
+    "高级 API：简化的接口隐藏复杂细节",
+    "完整生命周期：从创建到完成的全过程记录"
+  ],
+  "minimal_record_fields": {
+    "task_code": "Task Card 的任务码，用于关联",
+    "task_card_version": "Task Card 版本号（0.3）",
+    "record_type": "记录类型：workflow_execution | handoff | experiment",
+    "created_at": "创建时间，ISO 8601 格式",
+    "agent_or_person": "谁创建了这条记录（agent 名称或人名）",
+    "status": "记录状态：pending | in_progress | completed | failed",
+    "task_card_checksum": "SHA256 校验和，用于变更检测",
+    "verification_checklist": "12 个 Task Card 字段的验证状态"
+  },
+  "record_types": {
+    "workflow_execution": {
+      "description": "记录 Task Card 在 Workflow 中的自动执行",
+      "fields": [
+        "workflow_id, execution_id",
+        "prompt_strategy (candidate_a or candidate_b)",
+        "generated_prompt, agent_version",
+        "start_time, end_time, duration_seconds",
+        "output_path, result_summary, success, error_message"
+      ],
+      "lifecycle": ["pending -> in_progress -> completed/failed"]
+    },
+    "handoff": {
+      "description": "记录人工交接或实体间的任务转移",
+      "fields": [
+        "from_entity, to_entity",
+        "handoff_reason (quality_review, expertise_required, etc.)",
+        "exported_format (json | markdown | both)",
+        "exported_files, notes",
+        "decision (approved | needs_revision | escalated | closed)",
+        "decision_reason"
+      ],
+      "lifecycle": ["pending -> in_progress -> completed"]
+    },
+    "experiment": {
+      "description": "记录科学实验（workflow_comparison、prompt_stability 等）",
+      "fields": [
+        "experiment_type (from suitable_experiments)",
+        "experiment_id",
+        "hypothesis",
+        "metrics (flexible dict)",
+        "findings, conclusion, next_steps"
+      ],
+      "lifecycle": ["pending -> in_progress -> completed"]
+    }
+  },
+  "validation": {
+    "twelve_field_verification": "所有记录都验证 Task Card 的完整性，包括：task_type, background, goal, initial_state, expected_behavior, acceptance_criteria, relevant_files, constraints, test_method, difficulty, context_policy, suitable_experiments",
+    "checksum_validation": "检测源 Task Card 是否被修改",
+    "status_tracking": "记录完整的生命周期状态"
+  },
+  "integration_points": [
+    "Workflow 执行系统：使用 WorkflowIntegrationAPI.start_workflow_execution()",
+    "Handoff UI：使用 WorkflowIntegrationAPI.initiate_handoff() 和 complete_handoff()",
+    "实验框架：使用 WorkflowIntegrationAPI.start_experiment() 和 complete_experiment()",
+    "存储系统：使用 TaskCardRecordSerializer 序列化/反序列化"
+  ],
+  "backward_compatibility": {
+    "existing_task_model": "不修改 Project/Plan/Task 主模型",
+    "result_json": "现有 result.json 完成契约保持不变",
+    "naming_convention": "{task_code}.{record_type}.record.json 用于新记录"
+  },
+  "data_flow_example": [
+    "1. 加载 Task Card v0.3",
+    "2. 启动 Workflow 执行 -> 创建 WorkflowExecutionRecord",
+    "3. Agent 执行，使用 TC-02/TC-03 生成的 Prompt",
+    "4. 完成执行，记录输出和耗时",
+    "5. 启动 Handoff -> 创建 HandoffRecord",
+    "6. 使用 TC-04 导出为 JSON/Markdown",
+    "7. 人工审查和决策",
+    "8. 启动 Experiment（稳定性测试）-> 创建 ExperimentRecord",
+    "9. 记录指标和结论",
+    "10. 所有三类记录归档"
+  ],
+  "test_results": {
+    "validation_example": "OK PASS - 所有 12 个字段验证通过",
+    "checksum_computation": "OK - SHA256 计算成功 (2f18d619...)",
+    "record_serialization": "OK - JSON 序列化成功 (1027 bytes)",
+    "lifecycle_example": "OK - 完整的任务生命周期执行成功"
+  },
+  "implementation_classes": {
+    "MinimalRecordFields": "所有记录类型的最小字段定义",
+    "WorkflowExecutionRecord": "Workflow 执行记录",
+    "HandoffRecord": "交接记录",
+    "ExperimentRecord": "实验记录",
+    "TaskCardRecordFactory": "统一的记录创建工厂",
+    "TaskCardRecordSerializer": "序列化/反序列化",
+    "WorkflowIntegrationAPI": "高级集成 API（推荐使用）"
+  },
+  "usage_patterns": {
+    "workflow_basic": "record = WorkflowIntegrationAPI.start_workflow_execution(task_card, ...); completion = WorkflowIntegrationAPI.complete_workflow_execution(record, ...)",
+    "handoff_basic": "record = WorkflowIntegrationAPI.initiate_handoff(task_card, ...); decision = WorkflowIntegrationAPI.complete_handoff(record, ...)",
+    "experiment_basic": "record = WorkflowIntegrationAPI.start_experiment(task_card, ...); result = WorkflowIntegrationAPI.complete_experiment(record, ...)"
+  },
+  "scope": {
+    "in_scope": [
+      "最小字段集定义",
+      "三类记录数据模型",
+      "统一验证和变更检测",
+      "高级集成 API",
+      "完整的生命周期管理",
+      "向后兼容性设计"
+    ],
+    "out_of_scope": [
+      "数据库持久化实现",
+      "分布式交接协议",
+      "自动实验运行器",
+      "实验结果可视化",
+      "记录版本化"
+    ]
+  },
+  "with_other_tasks": {
+    "TC-01": "定义 Task Card Schema（验证清单验证）",
+    "TC-02": "Agent Prompt 候选 A（Workflow 中使用）",
+    "TC-03": "Agent Prompt 候选 B（Workflow 中使用）",
+    "TC-04": "Task Card 导出（Handoff 中使用）",
+    "TC-05": "本任务：统一集成点"
+  },
+  "metadata": {
+    "task_code": "TC-05",
+    "author": "Claude Haiku 4.5",
+    "created_at": "2026-05-08T12:12:24.928+08:00",
+    "completed_at": "2026-05-08T12:50:00+08:00"
+  }
+}
