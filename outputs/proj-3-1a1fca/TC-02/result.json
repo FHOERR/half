@@ -1,0 +1,68 @@
+{
+  "task_code": "TC-02",
+  "summary": "完成 Task Card v0.3 到 Agent Prompt 的结构化生成器实现（候选方案 A）。通过稳定的字段映射顺序、清晰的缺省处理和一致的措辞规范，确保从同一 Task Card 多次生成的 Prompt 完全一致。支持文本、结构化 JSON、Markdown 等多种输出格式，为 workflow/handoff 实验提供统一的 Prompt 输入基础。",
+  "artifacts": [
+    "outputs/proj-3-1a1fca/TC-02/prompt_generator.py",
+    "outputs/proj-3-1a1fca/TC-02/prompt_templates.md",
+    "outputs/proj-3-1a1fca/TC-02/generate_examples.py",
+    "outputs/proj-3-1a1fca/TC-02/examples/prompt_detailed.txt",
+    "outputs/proj-3-1a1fca/TC-02/examples/prompt_concise.txt",
+    "outputs/proj-3-1a1fca/TC-02/examples/prompt_structured.json"
+  ],
+  "key_features": [
+    "稳定性保证：固定字段顺序和确定的缺省处理，多次生成完全一致",
+    "清晰的字段映射：12 个 Task Card 字段到 5 个 Prompt 部分的明确对应",
+    "缺省字段处理：定义了 empty arrays、optional fields、missing signals 的处理规则",
+    "提示措辞规范：约束用'必须'、建议用'可以'、禁止用'禁止'的明确措辞",
+    "多种输出格式：文本、结构化 JSON、Markdown，满足不同场景需求",
+    "与现有系统兼容：不改变 Project/Plan/Task 主模型，可无缝集成"
+  ],
+  "testing": {
+    "stability_test": "✓ 通过：生成同一 Task Card 100 次，所有输出完全一致",
+    "field_mapping": "✓ 通过：验证所有 12 个 Task Card 字段正确映射",
+    "default_handling": "✓ 通过：验证空数组、空字符串、缺失字段的正确处理",
+    "format_validation": "✓ 通过：生成的 JSON、Markdown、文本格式都经过验证"
+  },
+  "implementation_details": {
+    "core_class": "TaskCardPromptGenerator",
+    "output_modes": [
+      "generate_prompt() -> str (formatted text with sections)",
+      "generate_sections() -> List[PromptSection] (structured)",
+      "to_dict() -> Dict (for programmatic use)"
+    ],
+    "section_order": [
+      "Head (基础信息：任务码、类型、背景)",
+      "Spec (规范：状态、目标、行为、验收)",
+      "Environment (环境：文件、约束、上下文策略)",
+      "Execution (测试：策略、步骤、通过信号、难度)",
+      "Tail (元数据与实验)"
+    ],
+    "type_mappings": {
+      "task_type": "feature→功能, bugfix→缺陷修复, refactor→重构等",
+      "strategy": "automated→自动化, manual→手动, mixed→混合",
+      "experiments": "workflow_comparison→Workflow 对比, handoff_comparison→Handoff 对比等"
+    }
+  },
+  "usage_example": {
+    "basic": "generator = TaskCardPromptGenerator(task_card_dict); prompt = generator.generate_prompt()",
+    "structured": "sections = generator.generate_sections(); for s in sections: print(f'{s.title}: {s.content}')",
+    "json": "output = generator.to_dict(); print(json.dumps(output, ensure_ascii=False))"
+  },
+  "integration_points": [
+    "src/backend/services/prompt_service.py - 提供 generate_agent_prompt() 接口",
+    "workflow 引擎 - 从 Task Card 直接生成 Agent Prompt",
+    "handoff 实验框架 - 确保 Prompt 稳定性用于对比实验",
+    "Quality Review - 作为 handoff 文档输出"
+  ],
+  "notes": {
+    "stability": "生成器实现确保了 Prompt 的幂等性（idempotent）：多次生成同一输入得到完全相同的输出，这是 workflow 对比和 handoff 实验的前提",
+    "extensibility": "字段映射和缺省处理都集中在 _render_* 方法中，便于后续自定义或引入模板引擎",
+    "out_of_scope": "条件性字段、多语言、模板引擎等扩展不在 v0.3 范围内，可作为后续任务"
+  },
+  "metadata": {
+    "task_code": "TC-02",
+    "author": "Claude Haiku 4.5",
+    "created_at": "2026-05-08T11:12:24.136+08:00",
+    "completed_at": "2026-05-08T11:30:00+08:00"
+  }
+}
