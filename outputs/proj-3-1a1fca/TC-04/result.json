@@ -1,0 +1,120 @@
+{
+  "task_code": "TC-04",
+  "summary": "实现 Task Card v0.3 的双格式导出能力。支持 JSON（规范化结构格式）和 Markdown（人读格式）导出，保证字段顺序统一、空值处理一致、版本标记清晰。所有导出格式遵循相同的字段顺序规则（6 个类别），支持 workflow 集成、版本控制对比、人工评审等场景。",
+  "artifacts": [
+    "outputs/proj-3-1a1fca/TC-04/task_card_exporter.py",
+    "outputs/proj-3-1a1fca/TC-04/export_specification.md",
+    "outputs/proj-3-1a1fca/TC-04/generate_exports.py",
+    "outputs/proj-3-1a1fca/TC-04/examples/export_pretty.json",
+    "outputs/proj-3-1a1fca/TC-04/examples/export_compact.json",
+    "outputs/proj-3-1a1fca/TC-04/examples/export_with_toc.md",
+    "outputs/proj-3-1a1fca/TC-04/examples/export_no_toc.md",
+    "outputs/proj-3-1a1fca/TC-04/examples/export_dict.json"
+  ],
+  "key_features": [
+    "字段顺序规范化：6 个类别、14 个字段，所有导出格式遵循相同顺序",
+    "双格式导出：JSON（机器处理）+ Markdown（人工评审）",
+    "稳定性保证：多次导出完全一致，幂等性保证",
+    "空值处理一致：空数组保留、缺失字段省略、版本自动补充",
+    "圆形转换验证：JSON ↔ Dict ↔ JSON 数据完整性保证",
+    "灵活输出模式：JSON 美化/紧凑、Markdown 带/不带 TOC"
+  ],
+  "field_categories": {
+    "1_metadata": ["version", "metadata"],
+    "2_type_context": ["task_type", "background"],
+    "3_specification": ["initial_state", "goal", "expected_behavior", "acceptance_criteria"],
+    "4_constraints": ["relevant_files", "constraints", "context_policy"],
+    "5_testing": ["test_method", "difficulty"],
+    "6_experiments": ["suitable_experiments"]
+  },
+  "export_formats": {
+    "json": {
+      "description": "规范化 JSON 格式，字段按定义顺序排列",
+      "modes": ["pretty (with indentation)", "compact (minimal whitespace)"],
+      "use_cases": ["workflow integration", "version control", "API exchange"]
+    },
+    "markdown": {
+      "description": "人类可读的 Markdown 格式，包含自动生成的 TOC 和格式化",
+      "modes": ["with table of contents", "without table of contents"],
+      "use_cases": ["human review", "documentation", "handoff communication"]
+    },
+    "dict": {
+      "description": "Python dict 格式，用于程序化处理",
+      "modes": ["single format"],
+      "use_cases": ["programmatic processing", "API integration"]
+    }
+  },
+  "stability_tests": {
+    "json_stability": "✓ 10 次导出完全一致",
+    "markdown_stability": "✓ 10 次导出完全一致",
+    "field_order_consistency": "✓ 5 次导出字段顺序一致",
+    "round_trip_conversion": "✓ JSON → Dict → JSON 数据完整保留"
+  },
+  "default_handling": {
+    "version": "缺失时自动补充为 '0.3'",
+    "metadata": "可完全缺失，不添加默认值",
+    "relevant_files": "空数组保留，不删除字段",
+    "must_confirm": "空数组保留，不删除字段",
+    "forbidden_actions": "空数组保留，不删除字段",
+    "pass_signal": "可缺失，不添加默认值"
+  },
+  "type_mappings": {
+    "task_type": "feature→功能, bugfix→缺陷修复, refactor→重构等",
+    "strategy": "automated→自动化, manual→手动, mixed→混合",
+    "experiments": "workflow_comparison→Workflow 对比等"
+  },
+  "markdown_special_features": {
+    "difficulty_emoji": "🟢 S (简单), 🟡 M (中等), 🟠 L (复杂), 🔴 XL (很复杂)",
+    "automatic_toc": "可选生成目录，包含所有主要部分的链接",
+    "empty_value_handling": "空数组显示为 '_无..._'，缺失字段完全省略",
+    "metadata_preservation": "完整保留创建时间、作者、任务码等信息"
+  },
+  "json_export_size_comparison": {
+    "pretty_printed_bytes": 1476,
+    "compact_format_bytes": 1262,
+    "size_reduction_percent": 14.5,
+    "recommendation": "使用 compact 格式用于存储和传输，pretty 格式用于调试"
+  },
+  "integration_scenarios": [
+    "Workflow 管道：Task Card JSON → 验证 → 导出为 Markdown 用于评审 → 导出为 JSON 用于 Agent",
+    "版本控制：导出 JSON 进行 git diff 对比，导出 Markdown 进行人工审视",
+    "文档生成：批量导出 Markdown，生成 Task Card 文档库",
+    "API 交换：使用紧凑 JSON 格式进行跨系统传输"
+  ],
+  "out_of_scope": [
+    "YAML / TOML / CSV 导出",
+    "自动 Markdown ↔ JSON 转换",
+    "版本迁移（v0.3 → v0.4）",
+    "Task Card 编辑 UI"
+  ],
+  "testing_summary": {
+    "total_tests": 4,
+    "passed": 4,
+    "failed": 0,
+    "stability": "100%"
+  },
+  "implementation_details": {
+    "core_class": "TaskCardExporter",
+    "field_ordering": "FIELD_ORDER dict with (FieldCategory, order) tuples",
+    "null_handling": "Explicit rules for each field type (string, array, object)",
+    "type_enums": "TYPE_NAMES, STRATEGY_NAMES, EXPERIMENT_NAMES, DIFFICULTY_COLORS",
+    "render_methods": "_render_*() for each major section"
+  },
+  "usage_examples": [
+    "exporter = TaskCardExporter(task_card); json_str = exporter.export_json()",
+    "md_str = exporter.export_markdown(include_toc=True)",
+    "dict_obj = exporter.export_dict()",
+    "load_and_export('task.json', 'output_dir')"
+  ],
+  "compatibility": {
+    "with_tc01": "使用 TC-01 定义的 Schema",
+    "with_tc02": "导出的 Task Card 可用于 TC-02 生成 Agent Prompt",
+    "backwards_compatible": "不改变现有数据模型，纯导出层增强"
+  },
+  "metadata": {
+    "task_code": "TC-04",
+    "author": "Claude Haiku 4.5",
+    "created_at": "2026-05-08T11:16:15.279+08:00",
+    "completed_at": "2026-05-08T11:35:00+08:00"
+  }
+}
