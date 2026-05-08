@@ -1,0 +1,57 @@
+{
+  "version": "0.3",
+  "task_type": "feature",
+  "background": "当前任务描述依赖自然语言，难以进行 workflow 对比与 handoff 复盘。",
+  "goal": "引入可复用的 Task Card 结构，作为任务执行输入。",
+  "initial_state": "系统现有 Task 以 task_name/description 表达，不具备结构化字段约束。",
+  "expected_behavior": "任务可通过标准字段完整表达，并可导出为 JSON/Markdown。",
+  "acceptance_criteria": [
+    "Task Card 包含并校验 v0.3 规定字段。",
+    "可从 Task Card 稳定生成执行 Prompt。",
+    "可用于 workflow、handoff、实验记录输入。"
+  ],
+  "relevant_files": [
+    "src/backend/services/prompt_service.py",
+    "src/backend/routers/tasks.py",
+    "src/frontend/src/pages/TasksPage.tsx"
+  ],
+  "constraints": [
+    "不重构现有 Project/Plan/Task 主模型。",
+    "不引入 Task Run 独立实体。",
+    "保持 result.json 完成契约不变。"
+  ],
+  "test_method": {
+    "strategy": "mixed",
+    "commands_or_steps": [
+      "用 schema 校验示例 Task Card JSON。",
+      "用同一 Task Card 多次生成 Prompt，检查字段顺序与语义稳定。",
+      "检查 Markdown/JSON 导出字段一致性。"
+    ],
+    "pass_signal": "字段完整、导出一致、Prompt 映射稳定。"
+  },
+  "difficulty": {
+    "level": "M",
+    "reason": "需要兼容现有运行时模型并定义清晰边界。"
+  },
+  "context_policy": {
+    "allow_assumptions": false,
+    "must_confirm": [
+      "涉及行为变更的默认值策略",
+      "字段缺省时的降级规则"
+    ],
+    "forbidden_actions": [
+      "修改既有 result.json 完成判定机制",
+      "引入 v0.3 范围外的大规模 benchmark 子系统"
+    ]
+  },
+  "suitable_experiments": [
+    "workflow_comparison",
+    "handoff_comparison",
+    "prompt_stability"
+  ],
+  "metadata": {
+    "task_code": "TC-01",
+    "author": "Claude Max",
+    "created_at": "2026-05-08T11:09:51+08:00"
+  }
+}

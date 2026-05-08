@@ -1,0 +1,9 @@
+{
+  "task_code": "TC-01",
+  "summary": "完成 Task Card v0.3 的结构定义与边界约束：给出 JSON Schema、字段语义规范、与现有 Project/Plan/Task 的兼容策略，以及 v0.3 不纳入范围。",
+  "artifacts": [
+    "outputs/proj-3-1a1fca/TC-01/task-card-v0.3.schema.json",
+    "outputs/proj-3-1a1fca/TC-01/task-card-v0.3-spec.md",
+    "outputs/proj-3-1a1fca/TC-01/task-card-v0.3.example.json"
+  ]
+}
