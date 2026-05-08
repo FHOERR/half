@@ -1,0 +1,108 @@
+{
+  "strategy_id": "task-card-prompt-b-v0.3",
+  "version": "0.3",
+  "objective": {
+    "primary": "maximize_instruction_stability",
+    "secondary": "maximize_context_constraint_fidelity"
+  },
+  "section_order": [
+    "role",
+    "mission",
+    "background",
+    "initial_state",
+    "target_behavior",
+    "hard_constraints",
+    "acceptance_criteria",
+    "execution_plan_guardrails",
+    "test_method",
+    "deliverables"
+  ],
+  "field_mapping": [
+    {
+      "from": "task_type",
+      "to": "mission",
+      "rule": "render as task category and operating mode hint"
+    },
+    {
+      "from": "goal",
+      "to": "mission",
+      "rule": "render as one-sentence success state"
+    },
+    {
+      "from": "background",
+      "to": "background",
+      "rule": "compress into max 5 key facts, preserve order"
+    },
+    {
+      "from": "initial_state",
+      "to": "initial_state",
+      "rule": "render as current behavior baseline"
+    },
+    {
+      "from": "expected_behavior",
+      "to": "target_behavior",
+      "rule": "render as desired behavior statement"
+    },
+    {
+      "from": "constraints",
+      "to": "hard_constraints",
+      "rule": "render with MUST/MUST NOT keywords"
+    },
+    {
+      "from": "context_policy",
+      "to": "hard_constraints",
+      "rule": "merge forbidden_actions into MUST NOT; merge must_confirm into required process checks"
+    },
+    {
+      "from": "acceptance_criteria",
+      "to": "acceptance_criteria",
+      "rule": "numbered checklist only, no free prose"
+    },
+    {
+      "from": "difficulty",
+      "to": "execution_plan_guardrails",
+      "rule": "if level in [L, XL], force phased execution and risk notes"
+    },
+    {
+      "from": "test_method",
+      "to": "test_method",
+      "rule": "render strategy first, then numbered commands_or_steps, then pass_signal"
+    },
+    {
+      "from": "relevant_files",
+      "to": "deliverables",
+      "rule": "render as optional focus paths"
+    },
+    {
+      "from": "suitable_experiments",
+      "to": "deliverables",
+      "rule": "render as experiment logging dimensions"
+    }
+  ],
+  "fallback_policy": {
+    "missing_string": "emit explicit placeholder text instead of dropping section",
+    "missing_array": "emit empty list marker [] and keep section"
+  },
+  "conflict_resolution_order": [
+    "security_and_data_integrity",
+    "existing_runtime_contract",
+    "acceptance_criteria",
+    "implementation_convenience"
+  ],
+  "determinism_constraints": {
+    "sort_rules": {
+      "constraints": "input_order",
+      "acceptance_criteria": "input_order",
+      "relevant_files": "input_order"
+    },
+    "format_rules": {
+      "list_style": "numbered",
+      "keywords": [
+        "MUST",
+        "SHOULD",
+        "MUST NOT"
+      ],
+      "locale": "zh-CN"
+    }
+  }
+}

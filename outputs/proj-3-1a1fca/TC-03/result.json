@@ -1,0 +1,9 @@
+{
+  "task_code": "TC-03",
+  "summary": "已完成候选方案 B：定义 Task Card 到 Agent Prompt 的稳定生成策略，重点覆盖复杂任务中的约束分层、冲突消解、上下文门控与固定区段输出，以便与候选 A 做可比评审。",
+  "artifacts": [
+    "outputs/proj-3-1a1fca/TC-03/prompt-generator-b-spec.md",
+    "outputs/proj-3-1a1fca/TC-03/prompt-generator-b-rules.json",
+    "outputs/proj-3-1a1fca/TC-03/prompt-generator-b-example.md"
+  ]
+}
